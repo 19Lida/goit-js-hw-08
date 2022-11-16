@@ -21,13 +21,14 @@ refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 function onTextareaInput(event) {
   event.preventDefault();
   formData[event.target.name] = event.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+  const message = JSON.stringify(formData);
+  localStorage.setItem(STORAGE_KEY, message);
 }
 // функція перевірки стану сховища
 function onFormState() {
   const data = localStorage.getItem(STORAGE_KEY);
-  const formData = JSON.parse(messageStoregeSave);
-  if (data) {
+  const formData = JSON.parse(data);
+  if (formData) {
     refs.textarea.value = formData.message || '';
     refs.input.value = formData.email || '';
   }
@@ -40,3 +41,4 @@ function onFormSubmit(event) {
   // очищення локалсторедж після відправки смс
   localStorage.removeItem(STORAGE_KEY);
 }
+console.log(formData);

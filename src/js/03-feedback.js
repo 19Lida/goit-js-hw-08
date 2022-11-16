@@ -1,44 +1,48 @@
+// Крок-1
 import throttle from 'lodash.throttle';
 
-// ключ до сховища
+// Крок-1-ключ до сховища
 const STORAGE_KEY = 'feedback-form-state';
 
-// отримуємо доступ до елементів форми
+// Крок-1-отримуємо ссилки елементів форми
 const refs = {
   form: document.querySelector('.feedback-form'),
-  textarea: document.querySelector('feedback-form textarea'),
-  input: document.querySelector('feedback-form input'),
+  textarea: document.querySelector('.feedback-form textarea'),
+  // input: document.querySelector('feedback-form input'),
 };
-
-// додаємо значення
+// Крок-1 - сама форма
 let formData = {};
-// додаємо функціонал
-onFormState();
-refs.form.addEventListener('submit', onFormSubmit);
-refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 
-// функція збереження поточних значень
+//  Крок 3-ця ф-я викликається при загрузці сторінки і забирає значення з локал сторедж в текстерія
+onFormState();
+// Крок-1 вішаємо слухача подій на ссилки
+refs.form.addEventListener('submit', onFormSubmit);
+refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
+
+// Крок 1-функція збереження значення інпута в локалсторедж
 function onTextareaInput(event) {
   event.preventDefault();
-  formData[event.target.name] = event.target.value;
-  const message = JSON.stringify(formData);
+  const message = event.target.value;
+  // const message = JSON.stringify(formData); // stringify писати не треба,бо це ітак рядок,переводити треба масив,об"єкт
   localStorage.setItem(STORAGE_KEY, message);
 }
-// функція перевірки стану сховища
-function onFormState() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  const formData = JSON.parse(data);
-  if (formData) {
-    refs.textarea.value = formData.message || '';
-    refs.input.value = formData.email || '';
-  }
-}
-// очищає сабміт,встановлюємо по замовчуванню поведінку,очищаємо форму,очищаємо сховище
+
+// Крок-2 Відправляємо фотму:очищає сабміт,встановлюємо по замовчуванню поведінку,очищаємо форму
 function onFormSubmit(event) {
   event.preventDefault();
-  // очищення форми після відправки
+  console.log(formData);
+  // очищення полів форми після відправки
   event.currentTarget.reset();
-  // очищення локалсторедж після відправки смс
+  //Крок останній- очищення локалсторедж після відправки смс(це останній крок)
   localStorage.removeItem(STORAGE_KEY);
 }
-console.log(formData);
+// Крок -3 (продовження),функція перевірки стану сховища(чи є там щось?-без 46 лінійки,якщо такого ключа немає,то в консоль поверне null) і отримання значення з нього
+function onFormState() {
+  const savedMessage = localStorage.getItem(STORAGE_KEY);
+
+  if (savedMessage) {
+    console.log(savedMessage);
+    // обновляємо DOM(зберігається текст після перезагрузки сторінки)
+    refs.textarea.value = savedMessage;
+  }
+}

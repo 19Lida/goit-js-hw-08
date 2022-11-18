@@ -25,12 +25,12 @@ function onTextareaInput(event) {
   event.preventDefault();
   const message = event.target.value;
   // const message = JSON.stringify(formData); // stringify писати не треба,бо це ітак рядок,переводити треба масив,об"єкт
-  localStorage.setItem(STORAGE_KEY, message);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(message));
 }
 function onInputClick(event) {
   event.preventDefault();
   const email = event.target.value;
-  localStorage.setItem(STORAGE_KEY, email);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(email));
 }
 
 // Крок-2 Відправляємо фотму:очищає сабміт,встановлюємо по замовчуванню поведінку,очищаємо форму
@@ -55,4 +55,9 @@ function onFormState() {
     console.log(savedEmail);
     refs.input.value = savedEmail;
   }
+  // if (parseMessage) {
+  //   formData = parseMessage;
+  //   form.email.value = formData.email || '';
+  //   form.message.value = formData.message || '';
+  // }
 }

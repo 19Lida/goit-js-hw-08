@@ -8,7 +8,7 @@ const STORAGE_KEY = 'feedback-form-state';
 const refs = {
   form: document.querySelector('.feedback-form'),
   textarea: document.querySelector('.feedback-form textarea'),
-  // input: document.querySelector('feedback-form input'),
+  input: document.querySelector('feedback-form input'),
 };
 // Крок-1 - сама форма
 let formData = {};
@@ -25,49 +25,40 @@ refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
 function onTextareaInput(event) {
   event.preventDefault();
   const message = event.target.value;
-  // formData[event.target.name] = event.target.value;
+
   // const message = JSON.stringify(formData); // stringify писати не треба,бо це ітак рядок,переводити треба масив,об"єкт
-  localStorage.setItem(STORAGE_KEY, message);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ message }));
 }
 // function onInputClick(event) {
 //   event.preventDefault();
 //   const email = event.target.value;
-//   localStorage.setItem(STORAGE_KEY, email);
+//   localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
 // }
 
 // Крок-2 Відправляємо фотму:очищає сабміт,встановлюємо по замовчуванню поведінку,очищаємо форму
 function onFormSubmit(event) {
   event.preventDefault();
   console.log(formData);
-  // const messageJson = localStorage.getItem(STORAGE_KEY);
-  // const savedMessage = JSON.parse(messageJson);
-  // if (savedMessage) {
-  //   console.log(savedMessage);
-  // }
 
   // очищення полів форми після відправки
   event.currentTarget.reset();
   //Крок останній- очищення локалсторедж після відправки смс
   localStorage.removeItem(STORAGE_KEY);
-  // formData = {};
+  formData = {};
 }
 // Крок -3 (продовження),функція перевірки стану сховища(чи є там щось?-без 46 лінійки,якщо такого ключа немає,то в консоль поверне null) і отримання значення з нього
 function onFormState() {
   const savedMessage = localStorage.getItem(STORAGE_KEY);
   // const savedEmail = localStorage.getItem(STORAGE_KEY);
+
   if (savedMessage) {
-    console.log(savedMessage);
+    // console.log(savedMessage);
     // обновляємо DOM(зберігається текст після перезагрузки сторінки в message)
-    refs.textarea.value = savedMessage;
+    refs.textarea.value = JSON.parse(savedMessage).message;
   }
 
   // if (savedEmail) {
   //   console.log(savedEmail);
-  //   refs.input.value = savedEmail;
-  // }
-  // if (parseMessage) {
-  //   formData = parseMessage;
-  //   form.email.value = formData.email || '';
-  //   form.message.value = formData.message || '';
+  // refs.input.value = JSON.parse(savedEmail).email;
   // }
 }

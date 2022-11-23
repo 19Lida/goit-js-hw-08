@@ -1,4 +1,4 @@
-// Крок-1
+Крок-1
 import throttle from 'lodash.throttle';
 
 // Крок-1-ключ до сховища
@@ -18,22 +18,23 @@ onFormState();
 // Крок-1 вішаємо слухача подій на ссилки
 refs.form.addEventListener('submit', onFormSubmit);
 refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
-refs.input.addEventListener('input', throttle(onTextareaInput, 500));
-// refs.input.addEventListener('input', onInputClick);
+// refs.input.addEventListener('input', throttle(onTextareaInput, 500));
+refs.input.addEventListener('input', onInputClick);
 
 // Крок 1-функція збереження значення інпута в локалсторедж
 function onTextareaInput(event) {
   event.preventDefault();
-  const name = event.target.name;
-formData[name] = event.target.value
+  const message = event.target.value;
+formData.message = message;
   // const message = JSON.stringify(formData); // stringify писати не треба,бо це ітак рядок,переводити треба масив,об"єкт
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...formData }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
-// function onInputClick(event) {
-//   //   event.preventDefault();
-//   const email = event.target.value;
-//   localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
-// }
+function onInputClick(event) {
+  //   event.preventDefault();
+  const email = event.target.value;
+  formData.email = email;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+}
 
 // Крок-2 Відправляємо фотму:очищає сабміт,встановлюємо по замовчуванню поведінку,очищаємо форму
 function onFormSubmit(event) {
@@ -50,11 +51,14 @@ function onFormSubmit(event) {
 function onFormState() {
   const savedMessage = localStorage.getItem(STORAGE_KEY);
   // const savedEmail = localStorage.getItem(STORAGE_KEY);
-
+ 
   if (savedMessage) {
     // console.log(savedMessage);
     // обновляємо DOM(зберігається текст після перезагрузки сторінки в message)
+    refs.textarea.value = JSON.parse(savedMessage).message;
+  // }
+  // if (savedEmail) {
     refs.input.value = JSON.parse(savedMessage).email;
-    refs.textarea.value = JSON.parse(savedEmail).message;
+
   }
 }
